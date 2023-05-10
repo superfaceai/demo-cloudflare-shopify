@@ -1,0 +1,19 @@
+{
+  "name": "demo-cloudflare-shopify",
+  "version": "0.1.0",
+  "main": "src/index.js",
+  "repository": "git@github.com:superfaceai/demo-cloudflare-shopify.git",
+  "license": "MIT",
+  "author": "Superface Team <hello@superface.ai>",
+  "private": true,
+  "dependencies": {
+    "@superfaceai/one-sdk": "3.0.0-alpha.4"
+  },
+  "devDependencies": {
+    "wrangler": "^2.20.0"
+  },
+  "scripts": {
+    "dev": "wrangler dev --local",
+    "publish": "wrangler publish"
+  }
+}
