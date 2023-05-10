@@ -8,6 +8,9 @@ import mapCreateCustomerShopify from '../superface/customer-management.create-cu
 import providerShopify from '../superface/shopify.provider.json';
 
 const client = new Client({
+  env: {
+    SF_LOG: 'info' // change to `debug` or `trace` for development debugging
+  },
   preopens: {
     'superface/customer-management.create-customer.supr': new Uint8Array(profileCreateCustomer),
     'superface/customer-management.create-customer.shopify.suma.js': new Uint8Array(mapCreateCustomerShopify),
