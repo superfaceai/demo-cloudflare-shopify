@@ -10,7 +10,12 @@ import providerShopify from '../superface/shopify.provider.json';
 const client = new Client({
   env: {
     SF_LOG: 'info' // change to `debug` or `trace` for development debugging
+    // also possible to configure how long are document cached inside the core (separate from cloudflare cache)
+    // SF_CONFIG_CACHE_DURATION: <seconds> // default is 1 hour
   },
+  // preopens describe a virtual filesystem in which relevant files are expected
+  // the prefix `superface/` is configurable in this object by setting `assetsPath`.
+  // maps, profiles and providers and looked up under `assetsPath` in the following form:
   preopens: {
     'superface/customer-management.create-customer.supr': new Uint8Array(profileCreateCustomer),
     'superface/customer-management.create-customer.shopify.suma.js': new Uint8Array(mapCreateCustomerShopify),
@@ -20,7 +25,9 @@ const client = new Client({
 
 export default {
   async fetch(request, env, ctx) {
-    const result = (await client.getProfile('customer-management/create-customer')).getUseCase('CreateCustomer').perform(
+    const profile = await client.getProfile('customer-management/create-customer');
+    const usecase = profile.getUseCase('CreateCustomer');
+    const result = usecase.perform(
       {
         customer: {
           first_name: 'Steve',
