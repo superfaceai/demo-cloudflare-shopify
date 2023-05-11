@@ -44,7 +44,8 @@ Finally, still inside the worker we call `usecase.perform(input, { provider: 'pr
 	```
 3. Run `npm run dev` and open the local endpoint in your browser (press b).
   - By default this runs the `src/GetCustomer.js` usecase (see wrangler.toml main field)
-	- To test another usecase use `npm run dev src/UpdateProduct.js` or `npm run dev src/CreateCustomer.js`
+	- To test another usecase use `npm run dev src/UpdateProduct.js`, `npm run dev src/CreateCustomer.js` or `npm run dev src/WebhookSubscription.js`
+4. Try it with `curl -X GET 'http://127.0.0.1:8787?customer_id=6973847339284'`
 
 ## Limitations
 
