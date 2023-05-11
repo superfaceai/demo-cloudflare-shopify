@@ -1,6 +1,6 @@
 # Cloudflare + Shopify demo
 
-Pre-production demo of the next-generation Superface OneSDK showcasing the use at the edge with Cloudflare workers and Shopify. 
+Pre-production demo of the next-generation [Superface OneSDK](https://github.com/superfaceai/one-sdk) showcasing the use at the edge with Cloudflare workers and Shopify.
 
 Currently, there are four workers each with their own Superface profile: 
 
@@ -79,4 +79,4 @@ The next-gen OneSDK is still in alpha stage and several features are not yet imp
 
 When reporting bugs it is ideal to attach logs from the SDK. Logging level can be configured by using the `SF_LOG` env variable passed to the client options and set to `trace` value. Note that this will share low level buffers and communication and as such will include sensitive data, such as inputs and access keys - avoid sharing them publicly.
 
-You can submit bug reports on this repository, OneSDK repository, via email or using [Discord](https://sfc.is/discord) for the fastest response.
+You can submit bug reports on this repository, [OneSDK repository](https://github.com/superfaceai/one-sdk), via email or using [Discord](https://sfc.is/discord) for the fastest response.
