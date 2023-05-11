@@ -6,7 +6,7 @@
   "author": "Superface Team <hello@superface.ai>",
   "private": true,
   "dependencies": {
-    "@superfaceai/one-sdk": "3.0.0-alpha.5"
+    "@superfaceai/one-sdk": "^3.0.0-alpha.6"
   },
   "devDependencies": {
     "wrangler": "^2.20.0"

@@ -7,19 +7,18 @@ import mapProductUpdateShopify from '../superface/product-management.product-upd
 // @ts-ignore
 import providerShopify from '../superface/shopify.provider.json';
 
-// See GetCustomer.js usecase for more comments
-const client = new Client({
-  preopens: {
-    'superface/product-management.product-update.supr': new Uint8Array(profileProductUpdate),
-    'superface/product-management.product-update.shopify.suma.js': new Uint8Array(mapProductUpdateShopify),
-    'superface/shopify.provider.json': new Uint8Array(providerShopify)
-  }
-});
-
 export default {
   async fetch(request, env, ctx) {
     // here we don't use the request parameter as this is just an example
 
+    // See GetCustomer.js usecase for more comments
+    const client = new Client({
+      preopens: {
+        'superface/product-management.product-update.supr': new Uint8Array(profileProductUpdate),
+        'superface/product-management.product-update.shopify.suma.js': new Uint8Array(mapProductUpdateShopify),
+        'superface/shopify.provider.json': new Uint8Array(providerShopify)
+      }
+    });
     const profile = await client.getProfile('product-management/product-update');
     const usecase = profile.getUseCase('UpdateProduct');
 
@@ -51,13 +50,13 @@ export default {
           title: 'IPod Nano - 8GB',
           variants: [
             {
-            product_id: 8296827257108,
-            option1: 'Pink',
-            position: 1,
-            price: 199.99,
-            sku: 'IPOD2008PINK',
-            title: 'Pink',
-          }
+              product_id: 8296827257108,
+              option1: 'Pink',
+              position: 1,
+              price: 199.99,
+              sku: 'IPOD2008PINK',
+              title: 'Pink',
+            }
           ],
           vendor: 'Apple',
         },

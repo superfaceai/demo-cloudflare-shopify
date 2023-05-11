@@ -7,20 +7,19 @@ import mapSubscribeWebhookShopify from '../superface/webhook-management.subscrib
 // @ts-ignore
 import providerShopify from '../superface/shopify.provider.json';
 
-// See GetCustomer.js usecase for more comments
-const client = new Client({
-  env: {
-    SF_LOG: 'trace'
-  },
-  preopens: {
-    'superface/webhook-management.subscribe-webhook.supr': new Uint8Array(profileSubscribeWebhook),
-    'superface/webhook-management.subscribe-webhook.shopify.suma.js': new Uint8Array(mapSubscribeWebhookShopify),
-    'superface/shopify.provider.json': new Uint8Array(providerShopify)
-  }
-});
-
 export default {
   async fetch(request, env, ctx) {
+    // See GetCustomer.js usecase for more comments
+    const client = new Client({
+      env: {
+        SF_LOG: 'trace'
+      },
+      preopens: {
+        'superface/webhook-management.subscribe-webhook.supr': new Uint8Array(profileSubscribeWebhook),
+        'superface/webhook-management.subscribe-webhook.shopify.suma.js': new Uint8Array(mapSubscribeWebhookShopify),
+        'superface/shopify.provider.json': new Uint8Array(providerShopify)
+      }
+    });
     const profile = await client.getProfile('webhook-management/subscribe-webhook');
     const usecase = profile.getUseCase('WebhookSubscription');
     const result = usecase.perform(
