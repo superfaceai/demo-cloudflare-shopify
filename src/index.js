@@ -1,4 +1,4 @@
-import { Client } from '@superfaceai/one-sdk/cloudflare';
+import { Client, PerformError, UnexpectedError } from '@superfaceai/one-sdk/cloudflare';
 
 // @ts-ignore
 import profileCreateCustomer from '../superface/customer-management.create-customer.supr';
@@ -20,7 +20,7 @@ const client = new Client({
 
 export default {
   async fetch(request, env, ctx) {
-    const result = await (await client.getProfile('customer-management/create-customer')).getUseCase('CreateCustomer').perform(
+    const result = (await client.getProfile('customer-management/create-customer')).getUseCase('CreateCustomer').perform(
       {
         customer: {
           first_name: 'Steve',
@@ -56,6 +56,18 @@ export default {
       }
     );
 
-    return new Response(`Result: ${JSON.stringify(result)}`);
+    try {
+      // result as defined in the profile
+      const ok = await result;
+      return new Response(`Result: ${JSON.stringify(ok)}`);
+    } catch (error) {
+      if (error instanceof PerformError) {
+        // error as defined in the profile
+        return new Response(`Error: ${JSON.stringify(error.errorResult)}`, { status: 400 });
+      } else {
+        // exception - should not be part of a normal flow
+        return new Response(`${error.name}\n${error.message}`, { status: 500 });
+      }
+    }
   }
 }
