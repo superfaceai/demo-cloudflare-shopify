@@ -7,17 +7,16 @@ import mapCreateCustomerShopify from '../superface/customer-management.create-cu
 // @ts-ignore
 import providerShopify from '../superface/shopify.provider.json';
 
-// See GetCustomer.js usecase for more comments
-const client = new Client({
-  preopens: {
-    'superface/customer-management.create-customer.supr': new Uint8Array(profileCreateCustomer),
-    'superface/customer-management.create-customer.shopify.suma.js': new Uint8Array(mapCreateCustomerShopify),
-    'superface/shopify.provider.json': new Uint8Array(providerShopify)
-  }
-});
-
 export default {
   async fetch(request, env, ctx) {
+    // See GetCustomer.js usecase for more comments
+    const client = new Client({
+      preopens: {
+        'superface/customer-management.create-customer.supr': new Uint8Array(profileCreateCustomer),
+        'superface/customer-management.create-customer.shopify.suma.js': new Uint8Array(mapCreateCustomerShopify),
+        'superface/shopify.provider.json': new Uint8Array(providerShopify)
+      }
+    });
     const profile = await client.getProfile('customer-management/create-customer');
     const usecase = profile.getUseCase('CreateCustomer');
     const result = usecase.perform(

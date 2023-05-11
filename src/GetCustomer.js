@@ -8,23 +8,24 @@ import mapGetCustomerShopify from '../superface/customer-management.get-customer
 // @ts-ignore
 import providerShopify from '../superface/shopify.provider.json';
 
-const client = new Client({
-  env: {
-    SF_LOG: 'info' // use `debug` or `trace` for development debugging
-    // SF_CONFIG_CACHE_DURATION: <seconds> // internal assets cache, separate from cloudflare cache (default: 1 hour)
-  },
-  // preopens describes the virtual filesystem whith the OneSDK file convention mapped to assets
-  preopens: {
-    'superface/customer-management.get-customer.supr': new Uint8Array(profileGetCustomer),
-    'superface/customer-management.get-customer.shopify.suma.js': new Uint8Array(mapGetCustomerShopify),
-    'superface/shopify.provider.json': new Uint8Array(providerShopify)
-  }
-});
+
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
+    const client = new Client({
+      env: {
+        SF_LOG: 'info' // use `debug` or `trace` for development debugging
+        // SF_CONFIG_CACHE_DURATION: <seconds> // internal assets cache, separate from cloudflare cache (default: 1 hour)
+      },
+      // preopens describes the virtual filesystem whith the OneSDK file convention mapped to assets
+      preopens: {
+        'superface/customer-management.get-customer.supr': new Uint8Array(profileGetCustomer),
+        'superface/customer-management.get-customer.shopify.suma.js': new Uint8Array(mapGetCustomerShopify),
+        'superface/shopify.provider.json': new Uint8Array(providerShopify)
+      }
+    });
     const profile = await client.getProfile('customer-management/get-customer');  // profile id as defined in customer-management.get-customer.supr
     const usecase = profile.getUseCase('RetrieveCustomer'); // use case name as defined in the profile
     const result = usecase.perform(

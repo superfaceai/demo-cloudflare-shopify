@@ -13,7 +13,7 @@ Currently, there are four workers each with their own Superface profile:
 
 The workers are the `src` directory. Each file is a separate worker with the same structure. The default worker (set in wrangler.toml) is `GetCustomer.js` showcasing the retrieval of a customer from Shopify.
 
-At the top of each worker we import OneSDK as well as the assets (profile, map, provider) which are currently all baked into the worker. The OneSDK `Client` instance is initialized in the global scope as it has internal state and assets cache.
+At the top of each worker we import OneSDK as well as the assets (profile, map, provider) which are currently all baked into the worker.
 
 ```ts
 import { Client, PerformError, UnexpectedError } from '@superfaceai/one-sdk/cloudflare';
@@ -37,7 +37,7 @@ const client = new Client({
 
 The `Client` configuration includes the environment variables and "preopens" which describe a virtual filesystem where the assets are stored.
 
-As defined by Cloudflare, each worker has a fetch handler. Inside the handler, we instruct the `Client` which profile `client.getProfile('profile')` and use case `profile.getUseCase('usecase')` to use. Note the `getProfile()` does not have to be called on every request.
+As defined by Cloudflare, each worker has a fetch handler. Inside the handler, we instruct the `Client` which profile `client.getProfile('profile')` and use case `profile.getUseCase('usecase')` to use.
 
 Finally, we call `usecase.perform(input, { provider: 'provider', parameters: { /* ... */ }, security: { /* ... */ } })`. Input is the use case input while parameters and security depends on the provider. The `perform()` function then either:
 
@@ -60,6 +60,9 @@ Finally, we call `usecase.perform(input, { provider: 'provider', parameters: { /
 ## Todos & limitations
 
 The next-gen OneSDK is still in alpha stage and several features are not yet implemented. We welcome any and all feedback. The current limitations include:
+
+- OneSDK Client can't be instantiated in the global scope
+  - We discovered Cloudflare is not allowing synchronisation between requests. We need to make sure, that two different requests are not accessing OneSDK Core at the same time. [The problem](https://zuplo.com/blog/the-script-will-never-generate-a-response-on-cloudflare-workers).
 
 - Profile input and result validation is disabled
   - In the upcoming releases OneSDK will validate inputs and outputs to make sure they adhere to the profile.
