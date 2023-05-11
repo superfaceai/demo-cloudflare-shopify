@@ -11,7 +11,7 @@ Currently, there are four workers each with their own Superface profile:
 
 ## Description
 
-There workers are the `src` directory. Each file is a separate worker with the same structure. The default worker (set in wrangler.toml) is `GetCustomer.js` showcasing the retrieval of a customer from shopify.
+The workers are the `src` directory. Each file is a separate worker with the same structure. The default worker (set in wrangler.toml) is `GetCustomer.js` showcasing the retrieval of a customer from Shopify.
 
 At the top of each worker we import OneSDK as well as the assets (profile, map, provider) which are currently all baked into the worker. The OneSDK `Client` instance is initialized in the global scope as it has internal state and assets cache.
 
@@ -37,7 +37,7 @@ const client = new Client({
 
 The `Client` configuration includes the environment variables (api keys) and "preopens" which describe a virtual filesystem where the assets are stored.
 
-As defined by Cloudflare each worker has a fetch handler. Inside the the handler, we instruct the `Client` which profile `client.getProfile('profile')` and use case `profile.getUseCase('usecase')` to use. Note the `getProfile()` does not have to be called on every request.
+As defined by Cloudflare, each worker has a fetch handler. Inside the handler, we instruct the `Client` which profile `client.getProfile('profile')` and use case `profile.getUseCase('usecase')` to use. Note the `getProfile()` does not have to be called on every request.
 
 Finally, we call `usecase.perform(input, { provider: 'provider', parameters: { /* ... */ }, security: { /* ... */ } })`. Input is the use case input while parameters and security depends on the provider. The `perform()` function then either:
 
