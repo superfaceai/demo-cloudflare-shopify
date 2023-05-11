@@ -35,7 +35,7 @@ const client = new Client({
 });
 ```
 
-The `Client` configuration includes the environment variables (api keys) and "preopens" which describe a virtual filesystem where the assets are stored.
+The `Client` configuration includes the environment variables and "preopens" which describe a virtual filesystem where the assets are stored.
 
 As defined by Cloudflare, each worker has a fetch handler. Inside the handler, we instruct the `Client` which profile `client.getProfile('profile')` and use case `profile.getUseCase('usecase')` to use. Note the `getProfile()` does not have to be called on every request.
 
@@ -77,6 +77,6 @@ The next-gen OneSDK is still in alpha stage and several features are not yet imp
 
 ## Reporting bugs
 
-When reporting bugs it is ideal to attach logs from the SDK. Logging level can be configured by using the `SF_LOG` env variable passed to the client options and set to `trace` value. Note that this will share low level buffers and communication and as such will include sensitive data, such as inputs and access keys - avoid sharing them publicly.
+When reporting bugs it is ideal to attach logs from the OneSDK. Logging level can be configured by using the `SF_LOG` env variable passed to the client options and set to `trace` value. Note that this will share low level buffers and communication and as such will include sensitive data, such as inputs and access keys - avoid sharing them publicly.
 
 You can submit bug reports on this repository, [OneSDK repository](https://github.com/superfaceai/one-sdk), via email or using [Discord](https://sfc.is/discord) for the fastest response.
