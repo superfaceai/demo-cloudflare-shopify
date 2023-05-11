@@ -1,6 +1,6 @@
 import { Client, PerformError, UnexpectedError } from '@superfaceai/one-sdk/cloudflare';
 
-// import profile, map and provider as assets to be bundled along with the worker
+// import profile, map and provider assets to be bundled with the worker
 // @ts-ignore
 import profileGetCustomer from '../superface/customer-management.get-customer.supr';
 // @ts-ignore
@@ -10,13 +10,10 @@ import providerShopify from '../superface/shopify.provider.json';
 
 const client = new Client({
   env: {
-    SF_LOG: 'info' // change to `debug` or `trace` for development debugging
-    // also possible to configure how long are document cached inside the core (separate from cloudflare cache)
-    // SF_CONFIG_CACHE_DURATION: <seconds> // default is 1 hour
+    SF_LOG: 'info' // use `debug` or `trace` for development debugging
+    // SF_CONFIG_CACHE_DURATION: <seconds> // internal assets cache, separate from cloudflare cache (default: 1 hour)
   },
-  // preopens describe a virtual filesystem in which relevant files are expected
-  // the prefix `superface/` is configurable in this object by setting `assetsPath`.
-  // maps, profiles and providers and looked up under `assetsPath` in the following form:
+  // preopens describes the virtual filesystem whith the OneSDK file convention mapped to assets
   preopens: {
     'superface/customer-management.get-customer.supr': new Uint8Array(profileGetCustomer),
     'superface/customer-management.get-customer.shopify.suma.js': new Uint8Array(mapGetCustomerShopify),
@@ -28,20 +25,19 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // this profile name (in combination with the provider name passed below) is what is used to look up the profile, provider and map
-    // so this name needs to match the name in `preopens` above - or in the future a name of a profile in the Superface registry
-    const profile = await client.getProfile('customer-management/get-customer');
-    const usecase = profile.getUseCase('RetrieveCustomer');
+    const profile = await client.getProfile('customer-management/get-customer');  // profile id as defined in customer-management.get-customer.supr
+    const usecase = profile.getUseCase('RetrieveCustomer'); // use case name as defined in the profile
     const result = usecase.perform(
-      // this is the input of the perform
+      // input of the perform
       {
         customer_id: url.searchParams.get('customer_id'),
         fields: 'id, firstName, lastName, email'
       },
+      // provider configuration
       {
-        provider: 'shopify', // provider specified here
-        parameters: { SHOP: 'superface-test' }, // parameters are declared in shopify.provider.json - this one is directly interpolated into the baseUrl
-        security: { // apiKey security is defined in shopify.provider.json, and requires one value `apiKey` which is sources from the worker environment
+        provider: 'shopify', // provider id as defined in shopify.provider.json
+        parameters: { SHOP: 'superface-test' }, // provider-specific parameters as defined in shopify.provider.json
+        security: { // apiKey security as defined in shopify.provider.json, and requires the `apiKey` value which is sources from the worker environment
           apiKey: {
             apikey: env.SHOPIFY_ADMIN_API_KEY
           }
