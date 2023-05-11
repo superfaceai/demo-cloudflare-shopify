@@ -66,11 +66,11 @@ export default {
     try {
       // result as defined in the profile
       const ok = await result;
-      return new Response(`Result: ${JSON.stringify(ok)}`);
+      return new Response(`Result: ${JSON.stringify(ok, null, 2)}`);
     } catch (error) {
       if (error instanceof PerformError) {
         // error as defined in the profile
-        return new Response(`Error: ${JSON.stringify(error.errorResult)}`, { status: 400 });
+        return new Response(`Error: ${JSON.stringify(error.errorResult, null, 2)}`, { status: 400 });
       } else {
         // exception - should not be part of a normal flow
         return new Response(`${error.name}\n${error.message}`, { status: 500 });

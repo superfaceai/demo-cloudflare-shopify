@@ -1,5 +1,5 @@
 name = "demo-cloudflare-shopify"
-main = "src/index.js"
+main = "src/CreateCustomer.js"
 compatibility_date = "2023-04-18"
 
 workers_dev = true

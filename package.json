@@ -1,7 +1,6 @@
 {
   "name": "demo-cloudflare-shopify",
   "version": "0.1.0",
-  "main": "src/index.js",
   "repository": "git@github.com:superfaceai/demo-cloudflare-shopify.git",
   "license": "MIT",
   "author": "Superface Team <hello@superface.ai>",
