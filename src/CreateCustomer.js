@@ -1,4 +1,4 @@
-import { Client, PerformError, UnexpectedError } from '@superfaceai/one-sdk/cloudflare';
+import { Client, PerformError } from '@superfaceai/one-sdk/cloudflare';
 
 // @ts-ignore
 import profileCreateCustomer from '../superface/customer-management.create-customer.supr';
@@ -7,15 +7,8 @@ import mapCreateCustomerShopify from '../superface/customer-management.create-cu
 // @ts-ignore
 import providerShopify from '../superface/shopify.provider.json';
 
+// See GetCustomer.js usecase for more comments
 const client = new Client({
-  env: {
-    SF_LOG: 'info' // change to `debug` or `trace` for development debugging
-    // also possible to configure how long are document cached inside the core (separate from cloudflare cache)
-    // SF_CONFIG_CACHE_DURATION: <seconds> // default is 1 hour
-  },
-  // preopens describe a virtual filesystem in which relevant files are expected
-  // the prefix `superface/` is configurable in this object by setting `assetsPath`.
-  // maps, profiles and providers and looked up under `assetsPath` in the following form:
   preopens: {
     'superface/customer-management.create-customer.supr': new Uint8Array(profileCreateCustomer),
     'superface/customer-management.create-customer.shopify.suma.js': new Uint8Array(mapCreateCustomerShopify),
@@ -64,15 +57,12 @@ export default {
     );
 
     try {
-      // result as defined in the profile
       const ok = await result;
       return new Response(`Result: ${JSON.stringify(ok, null, 2)}`);
     } catch (error) {
       if (error instanceof PerformError) {
-        // error as defined in the profile
         return new Response(`Error: ${JSON.stringify(error.errorResult, null, 2)}`, { status: 400 });
       } else {
-        // exception - should not be part of a normal flow
         return new Response(`${error.name}\n${error.message}`, { status: 500 });
       }
     }

@@ -1,4 +1,4 @@
-import { Client, PerformError, UnexpectedError } from '@superfaceai/one-sdk/cloudflare';
+import { Client, PerformError } from '@superfaceai/one-sdk/cloudflare';
 
 // @ts-ignore
 import profileProductUpdate from '../superface/product-management.product-update.supr';
@@ -7,15 +7,8 @@ import mapProductUpdateShopify from '../superface/product-management.product-upd
 // @ts-ignore
 import providerShopify from '../superface/shopify.provider.json';
 
+// See GetCustomer.js usecase for more comments
 const client = new Client({
-  env: {
-    SF_LOG: 'info', // change to `debug` or `trace` for development debugging
-    // also possible to configure how long to cache documents inside the core (separate from cloudflare cache)
-    // SF_CONFIG_CACHE_DURATION: <seconds>, // default is 1 hour
-  },
-  // preopens describe a virtual filesystem in which relevant files are expected
-  // the prefix `superface/` is configurable in this object by setting `assetsPath`.
-  // maps, profiles and providers and looked up under `assetsPath` in the following form:
   preopens: {
     'superface/product-management.product-update.supr': new Uint8Array(profileProductUpdate),
     'superface/product-management.product-update.shopify.suma.js': new Uint8Array(mapProductUpdateShopify),
@@ -25,15 +18,12 @@ const client = new Client({
 
 export default {
   async fetch(request, env, ctx) {
-    // this profile name (in combination with the provider name passed below) is what is used to look up the profile, provider and map
-    // so this name needs to match the name in `preopens` above - or in the future a name of a profile in the Superface registry
+    // here we don't use the request parameter as this is just an example
+
     const profile = await client.getProfile('product-management/product-update');
     const usecase = profile.getUseCase('UpdateProduct');
 
-    // we don't use the request in any way, just directly run a perform - since this is an update it should probably respond only to PUT requests
-
     const result = usecase.perform(
-      // this is the input of the perform
       {
         product: {
           body_html: "It's the small iPod with a big idea: Video.",
@@ -73,9 +63,9 @@ export default {
         },
       },
       {
-        provider: 'shopify', // provider specified here
-        parameters: { SHOP: 'superface-test' }, // parameters are declared in shopify.provider.json - this one is directly interpolated into the baseUrl
-        security: { // apiKey security is defined in shopify.provider.json, and requires one value `apiKey` which is sources from the worker environment
+        provider: 'shopify',
+        parameters: { SHOP: 'superface-test' },
+        security: {
           apiKey: {
             apikey: env.SHOPIFY_ADMIN_API_KEY
           }
@@ -84,16 +74,12 @@ export default {
     );
 
     try {
-      // result as defined in the profile
       const ok = await result;
       return new Response(`Result: ${JSON.stringify(ok, null, 2)}`);
     } catch (error) {
       if (error instanceof PerformError) {
-        // error as defined in the profile
         return new Response(`Error: ${JSON.stringify(error.errorResult, null, 2)}`, { status: 400 });
       } else {
-        // exception - should not be part of a normal flow
-        // type of error here is UnexpectedError
         return new Response(`${error.name}\n${error.message}`, { status: 500 });
       }
     }

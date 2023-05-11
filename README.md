@@ -43,7 +43,8 @@ Finally, still inside the worker we call `usecase.perform(input, { provider: 'pr
 	SHOPIFY_ADMIN_API_KEY=shpat_xxx
 	```
 3. Run `npm run dev` and open the local endpoint in your browser (press b).
-	- To test another usecase use `npm run dev src/UpdateProduct.js` or `npm run dev src/GetCustomer.js`
+  - By default this runs the `src/GetCustomer.js` usecase (see wrangler.toml main field)
+	- To test another usecase use `npm run dev src/UpdateProduct.js` or `npm run dev src/CreateCustomer.js`
 
 ## Limitations
 
@@ -52,4 +53,12 @@ Finally, still inside the worker we call `usecase.perform(input, { provider: 'pr
 - Local integrations only. Cloudflare Client isn't talking to Registry to fetch integration code.
   - This is not a technical limitation, there simply isn't a registry for our new integrations yet.
 - Network errors (connection refused/aborted, dns errors, etc.) are passed to map as one error type.
-  - It is unclear at what level of granularity these errors will be handled, but they can be refined over time.
+  - It is unclear at what level of granularity these errors will be handled, but they can be refined over time.\
+- The compiled WASM core shipped with our SDK is hitting the limit of the Cloudflare workers free tier
+  - Local testing is unaffected, but when bundling with user code it might be required to use at least the default paid tier to get an increased limit.
+
+## Reporting bugs
+
+When reporting bugs it is ideal to attach logs from the SDK. Logging level can be configured by using the `SF_LOG` env variable passed to the client options and set to "trace" value. Note that this will share low level buffers and communication and as such will include sensitive data, such as inputs and access keys - avoid sharing them publicly.
+
+Such reports can be shared with us at our Discord <discord link here pls>.

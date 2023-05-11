@@ -1,5 +1,6 @@
 import { Client, PerformError, UnexpectedError } from '@superfaceai/one-sdk/cloudflare';
 
+// import profile, map and provider as assets to be bundled along with the worker
 // @ts-ignore
 import profileGetCustomer from '../superface/customer-management.get-customer.supr';
 // @ts-ignore
@@ -27,17 +28,20 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
+    // this profile name (in combination with the provider name passed below) is what is used to look up the profile, provider and map
+    // so this name needs to match the name in `preopens` above - or in the future a name of a profile in the Superface registry
     const profile = await client.getProfile('customer-management/get-customer');
     const usecase = profile.getUseCase('RetrieveCustomer');
     const result = usecase.perform(
+      // this is the input of the perform
       {
         customer_id: url.searchParams.get('customer_id'),
         fields: 'id, firstName, lastName, email'
       },
       {
-        provider: 'shopify',
-        parameters: { SHOP: 'superface-test' },
-        security: {
+        provider: 'shopify', // provider specified here
+        parameters: { SHOP: 'superface-test' }, // parameters are declared in shopify.provider.json - this one is directly interpolated into the baseUrl
+        security: { // apiKey security is defined in shopify.provider.json, and requires one value `apiKey` which is sources from the worker environment
           apiKey: {
             apikey: env.SHOPIFY_ADMIN_API_KEY
           }

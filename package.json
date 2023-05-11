@@ -13,6 +13,6 @@
   },
   "scripts": {
     "dev": "wrangler dev --local",
-    "publish": "wrangler publish"
+    "publish": "wrangler publish --minify"
   }
 }
