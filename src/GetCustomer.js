@@ -8,8 +8,6 @@ import mapGetCustomerShopify from '../superface/customer-management.get-customer
 // @ts-ignore
 import providerShopify from '../superface/shopify.provider.json';
 
-
-
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);

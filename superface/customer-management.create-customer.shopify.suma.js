@@ -24,6 +24,12 @@ function CreateCustomer({ input, services }) {
       errorMessage = 'Not Found';
     } else if (response.status === 422) {
       errorMessage = 'The request body contains semantic errors.';
+      for (const [key, errors] of Object.entries(body['errors'])) {
+        errorMessage += `\n\t${key}:`
+        for (const error of errors) {
+          errorMessage += `\n\t\t${error}`;
+        }
+      }
     } else if (response.status === 429) {
       errorMessage = 'Exceeded 2 calls per second for api client. Reduce request rates to resume uninterrupted service.';
     } else if (response.status >= 500) {
