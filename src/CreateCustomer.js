@@ -7,6 +7,22 @@ import mapCreateCustomerShopify from '../superface/customer-management.create-cu
 // @ts-ignore
 import providerShopify from '../superface/shopify.provider.json';
 
+/** Generates a random string within given length range from given alphabeth.
+ * 
+ * This is just for the demo and in real usage we would of course take this from user input.
+ */
+function demoRandomString(alphabet, minLength, maxLength) {
+  let result = '';
+
+  const length = Math.floor(Math.random() * (maxLength - minLength)) + minLength;
+  for (let i = 0; i < length; i += 1) {
+    result += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+  }
+
+  return result;
+}
+demoRandomString('abcdefghijklmnopqrstuvwxyz', 3, 10)
+
 export default {
   async fetch(request, env, ctx) {
     // See GetCustomer.js usecase for more comments
@@ -17,15 +33,20 @@ export default {
         'superface/shopify.provider.json': new Uint8Array(providerShopify)
       }
     });
+
+    const firstName = demoRandomString('abcdefghijklmnopqrstuvwxyz', 3, 10);
+    const lastName = demoRandomString('abcdefghijklmnopqrstuvwxyz', 3, 10);
+    const phoneNumber = demoRandomString('0123456789', 11, 11);
+
     const profile = await client.getProfile('customer-management/create-customer');
     const usecase = profile.getUseCase('CreateCustomer');
     const result = usecase.perform(
       {
         customer: {
-          first_name: 'Steve',
-          last_name: 'Lastnameson',
-          email: 'steve.lastnameson@example.com',
-          phone: '+15142546011',
+          first_name: `${firstName.charAt(0).toUpperCase()}${firstName.substring(1)}`,
+          last_name: `${lastName.charAt(0).toUpperCase()}${lastName.substring(1)}`,
+          email: `${firstName}.${lastName}@example.com`,
+          phone: `+${phoneNumber}`,
           verified_email: true,
           addresses: [
             {
@@ -60,7 +81,11 @@ export default {
       return new Response(`Result: ${JSON.stringify(ok, null, 2)}`);
     } catch (error) {
       if (error instanceof PerformError) {
-        return new Response(`Error: ${JSON.stringify(error.errorResult, null, 2)}`, { status: 400 });
+        let response = 'Error:';
+        for (const [key, value] of Object.entries(error.errorResult)) {
+          response += `\n${key}: ${value}`;
+        }
+        return new Response(response, { status: 400 });
       } else {
         return new Response(`${error.name}\n${error.message}`, { status: 500 });
       }
