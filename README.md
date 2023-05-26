@@ -8,7 +8,7 @@ Currently, there are five workers each with their own Superface profile:
 1. [Create customer](https://superface.ai/customer-management/create-customer)
 1. [Update product](https://superface.ai/product-management/product-update)
 1. [Subscribe a webhook](https://superface.ai/webhook-management/subscribe-webhook)
-1. Send an email (not yet published to superface.ai)
+1. [Send email](https://superface.ai/communication/send-email@2.2.0)
 
 ## Description
 

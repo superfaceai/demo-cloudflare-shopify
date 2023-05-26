@@ -1,9 +1,11 @@
 import { Client, PerformError } from '@superfaceai/one-sdk/cloudflare';
 
 // @ts-ignore
-import comlinkProfile from '../superface/email-communication.email-sending.supr';
+import comlinkProfile from '../superface/communication.send-email.supr';
 // @ts-ignore
-import comlinkMap from '../superface/email-communication.email-sending.resend.suma.js';
+import comlinkMapResend from '../superface/communication.send-email.resend.suma.js';
+// @ts-ignore
+import comlinkMapMailgun from '../superface/communication.send-email.mailgun.suma.js';
 // @ts-ignore
 import comlinkProvider from '../superface/resend.provider.json';
 
@@ -12,28 +14,45 @@ export default {
     // See GetCustomer.js usecase for more comments
     const client = new Client({
       preopens: {
-        'superface/email-communication.email-sending.supr': new Uint8Array(comlinkProfile),
-        'superface/email-communication.email-sending.resend.suma.js': new Uint8Array(comlinkMap),
+        'superface/communication.send-email.supr': new Uint8Array(comlinkProfile),
+        'superface/communication.send-email.resend.suma.js': new Uint8Array(comlinkMapResend),
+        'superface/communication.send-email.mailgun.suma.js': new Uint8Array(comlinkMapMailgun),
         'superface/resend.provider.json': new Uint8Array(comlinkProvider)
       }
     });
 
-    const profile = await client.getProfile('email-communication/email-sending');
+    // Resend
+    // const inputs = {
+    //   from: "onboarding@resend.dev",
+    //   to: "z@superface.ai",
+    //   subject: "Hello World",
+    //   html: "<p>Hello from EDGARX on the edge!</p>",
+    // };
+
+    // const provider = {
+    //   provider: 'resend',
+    //   parameters: {},
+    //   security: { bearer_token: { token: env.RESEND_TOKEN } }
+    // }
+
+    // Mailgun
+    const inputs = {
+      from: 'demo@demo.superface.org',
+      to: 'z@superface.ai',
+      subject: 'Hello World from EDGAR',
+      text: 'This is a plain text email with mailgun.'
+    };
+
+    const provider = {
+      provider: 'mailgun',
+      parameters: { DOMAIN: env.MAILGUN_DOMAIN },
+      security: { basic: { username: env.MAILGUN_USERNAME, password: env.MAILGUN_PASSWORD } }
+    }
+
+    const profile = await client.getProfile('communication/send-email');
     const result = await profile
       .getUseCase('SendEmail')
-      .perform(
-        {
-          from: "onboarding@resend.dev",
-          to: "hello@superface.ai",
-          subject: "Hello World",
-          html: "<p>Hello from EDGAR on the edge!</p>",
-        },
-        {
-          provider: 'resend',
-          parameters: {},
-          security: { bearer_token: { token: env.RESEND_TOKEN } }
-        }
-      );
+      .perform(inputs, provider);
 
     try {
       const ok = await result;
