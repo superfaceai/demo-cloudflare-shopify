@@ -50,7 +50,8 @@ Finally, we call `usecase.perform(input, { provider: 'provider', parameters: { /
 
 1. Run `npm install`.
 2. Create `.dev.vars` file:
-	```
+	
+  ```
 	SHOPIFY_ADMIN_API_KEY=shpat_xxx
   RESEND_TOKEN=re_xxx
   RESEND_TOKEN=re_QG8X7KdE_Ai37SdhQdv8s96tpeSyqNoPG
@@ -59,7 +60,7 @@ Finally, we call `usecase.perform(input, { provider: 'provider', parameters: { /
   MAILGUN_PASSWORD=xxx
 	```
 
-  Note the Resend and mailgun vars are needed only for the SendEmail worker.
+  (Resend and mailgun variables are needed only for the SendEmail worker)
 
 3. Run `npm run dev` and open the local endpoint in your browser (press b).
   - By default this runs the `src/GetCustomer.js` use case (see wrangler.toml)
