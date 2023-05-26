@@ -52,13 +52,13 @@ Finally, we call `usecase.perform(input, { provider: 'provider', parameters: { /
 2. Create `.dev.vars` file:
 	
   ```
-	SHOPIFY_ADMIN_API_KEY=shpat_xxx
+  SHOPIFY_ADMIN_API_KEY=shpat_xxx
   RESEND_TOKEN=re_xxx
   RESEND_TOKEN=re_QG8X7KdE_Ai37SdhQdv8s96tpeSyqNoPG
   MAILGUN_DOMAIN=xxx
   MAILGUN_USERNAME=api
   MAILGUN_PASSWORD=xxx
-	```
+  ```
 
   (Resend and mailgun variables are needed only for the SendEmail worker)
 
