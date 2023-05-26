@@ -2,7 +2,16 @@ function SendEmail({ input, parameters, services }) {
   const url = `${services.default}/email`;
   const options = {
     method: 'POST',
-    body: input,
+    body: {
+      to: input.to,
+      from: input.from,
+      subject: input.subject,
+      bcc: input.bcc,
+      cc: input.cc,
+      reply_to: input.replyTo,
+      html: input.html,
+      text: input.text,
+    },
     headers: {
       'Content-Type': 'application/json',
     },
@@ -14,22 +23,14 @@ function SendEmail({ input, parameters, services }) {
 
   if (response.status !== 200) {
     const error = {
-      error: body.error || 'An error occurred while sending the email.',
-      code: response.status,
-      rate_limit: {
-        limit: parseInt(response.headers['x-ratelimit-limit'][0], 10),
-        remaining: parseInt(response.headers['x-ratelimit-remaining'][0], 10),
-        reset: parseInt(response.headers['x-ratelimit-reset'][0], 10),
-      },
+      title: `Error ${response.status}`,
+      detail: body.message || 'An error occurred while sending the email.',
     };
     throw new std.unstable.MapError(error);
   }
 
   const result = {
-    id: body.id,
-    from: body.from,
-    to: body.to,
-    created_at: body.created_at,
+    messageId: body.id,
   };
 
   return result;

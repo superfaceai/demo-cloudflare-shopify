@@ -8,7 +8,7 @@ Currently, there are five workers each with their own Superface profile:
 1. [Create customer](https://superface.ai/customer-management/create-customer)
 1. [Update product](https://superface.ai/product-management/product-update)
 1. [Subscribe a webhook](https://superface.ai/webhook-management/subscribe-webhook)
-1. Send an email (not yet published to superface.ai)
+1. [Send email](https://superface.ai/communication/send-email@2.2.0)
 
 ## Description
 
@@ -50,10 +50,18 @@ Finally, we call `usecase.perform(input, { provider: 'provider', parameters: { /
 
 1. Run `npm install`.
 2. Create `.dev.vars` file:
-	```
+	
+  ```
 	SHOPIFY_ADMIN_API_KEY=shpat_xxx
   RESEND_TOKEN=re_xxx
+  RESEND_TOKEN=re_QG8X7KdE_Ai37SdhQdv8s96tpeSyqNoPG
+  MAILGUN_DOMAIN=xxx
+  MAILGUN_USERNAME=api
+  MAILGUN_PASSWORD=xxx
 	```
+
+  (Resend and mailgun variables are needed only for the SendEmail worker)
+
 3. Run `npm run dev` and open the local endpoint in your browser (press b).
   - By default this runs the `src/GetCustomer.js` use case (see wrangler.toml)
 	- To test other usecases use `npm run dev src/UpdateProduct.js`, `npm run dev src/CreateCustomer.js`, `npm run dev src/WebhookSubscription.js`, or `npm run dev src/SendEmail.js`
