@@ -7,7 +7,11 @@ import comlinkMapResend from '../superface/communication.send-email.resend.suma.
 // @ts-ignore
 import comlinkMapMailgun from '../superface/communication.send-email.mailgun.suma.js';
 // @ts-ignore
-import comlinkProvider from '../superface/resend.provider.json';
+import comlinkProviderResend from '../superface/resend.provider.json';
+// @ts-ignore
+import comlinkProviderMailgun from '../superface/mailgun.provider.json';
+
+
 
 export default {
   async fetch(request, env, ctx) {
@@ -17,7 +21,8 @@ export default {
         'superface/communication.send-email.supr': new Uint8Array(comlinkProfile),
         'superface/communication.send-email.resend.suma.js': new Uint8Array(comlinkMapResend),
         'superface/communication.send-email.mailgun.suma.js': new Uint8Array(comlinkMapMailgun),
-        'superface/resend.provider.json': new Uint8Array(comlinkProvider)
+        'superface/resend.provider.json': new Uint8Array(comlinkProviderResend),
+        'superface/mailgun.provider.json': new Uint8Array(comlinkProviderMailgun)
       }
     });
 

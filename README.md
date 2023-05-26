@@ -53,7 +53,14 @@ Finally, we call `usecase.perform(input, { provider: 'provider', parameters: { /
 	```
 	SHOPIFY_ADMIN_API_KEY=shpat_xxx
   RESEND_TOKEN=re_xxx
+  RESEND_TOKEN=re_QG8X7KdE_Ai37SdhQdv8s96tpeSyqNoPG
+  MAILGUN_DOMAIN=xxx
+  MAILGUN_USERNAME=api
+  MAILGUN_PASSWORD=xxx
 	```
+
+  Note the Resend and mailgun vars are needed only for the SendEmail worker.
+
 3. Run `npm run dev` and open the local endpoint in your browser (press b).
   - By default this runs the `src/GetCustomer.js` use case (see wrangler.toml)
 	- To test other usecases use `npm run dev src/UpdateProduct.js`, `npm run dev src/CreateCustomer.js`, `npm run dev src/WebhookSubscription.js`, or `npm run dev src/SendEmail.js`
