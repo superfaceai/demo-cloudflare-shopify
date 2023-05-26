@@ -1,13 +1,14 @@
 # Cloudflare + Shopify demo
 
-Pre-production demo of the next-generation [Superface OneSDK](https://github.com/superfaceai/one-sdk) showcasing the use at the edge with Cloudflare workers and Shopify.
+Pre-production demo of the next-generation [Superface OneSDK](https://github.com/superfaceai/one-sdk) showcasing the use at the edge with Cloudflare workers, Shopify, and Resend.
 
-Currently, there are four workers each with their own Superface profile: 
+Currently, there are five workers each with their own Superface profile: 
 
 1. [Retrieve customer](https://superface.ai/customer-management/get-customer)
 1. [Create customer](https://superface.ai/customer-management/create-customer)
 1. [Update product](https://superface.ai/product-management/product-update)
 1. [Subscribe a webhook](https://superface.ai/webhook-management/subscribe-webhook)
+1. Send an email (not yet published to superface.ai)
 
 ## Description
 
@@ -54,7 +55,7 @@ Finally, we call `usecase.perform(input, { provider: 'provider', parameters: { /
 	```
 3. Run `npm run dev` and open the local endpoint in your browser (press b).
   - By default this runs the `src/GetCustomer.js` use case (see wrangler.toml)
-	- To test other usecases use `npm run dev src/UpdateProduct.js`, `npm run dev src/CreateCustomer.js` or `npm run dev src/WebhookSubscription.js`
+	- To test other usecases use `npm run dev src/UpdateProduct.js`, `npm run dev src/CreateCustomer.js`, `npm run dev src/WebhookSubscription.js`, or `npm run dev src/SendEmail.js`
 4. Try it with `curl -X GET 'http://127.0.0.1:8787?customer_id=6973847339284'`
 
 ## Todos & limitations

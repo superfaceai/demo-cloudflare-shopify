@@ -1,0 +1,18 @@
+{
+  "name": "resend",
+  "defaultService": "default",
+  "services": [
+    {
+      "id": "default",
+      "baseUrl": "https://api.resend.com"
+    }
+  ],
+  "securitySchemes": [
+    {
+      "id": "bearer_token",
+      "type": "http",
+      "scheme": "bearer"
+    }
+  ],
+  "parameters": []
+}
