@@ -52,6 +52,7 @@ Finally, we call `usecase.perform(input, { provider: 'provider', parameters: { /
 2. Create `.dev.vars` file:
 	```
 	SHOPIFY_ADMIN_API_KEY=shpat_xxx
+  RESEND_TOKEN=re_xxx
 	```
 3. Run `npm run dev` and open the local endpoint in your browser (press b).
   - By default this runs the `src/GetCustomer.js` use case (see wrangler.toml)
