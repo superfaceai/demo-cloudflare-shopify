@@ -1,9 +1,9 @@
-import { Client, PerformError } from '@superfaceai/one-sdk/cloudflare';
+import { OneClient, PerformError } from '@superfaceai/one-sdk/cloudflare';
 
 // @ts-ignore
-import profileProductUpdate from '../superface/product-management.product-update.supr';
+import profileProductUpdate from '../superface/product-management.product-update.profile';
 // @ts-ignore
-import mapProductUpdateShopify from '../superface/product-management.product-update.shopify.suma.js';
+import mapProductUpdateShopify from '../superface/product-management.product-update.shopify.map.js';
 // @ts-ignore
 import providerShopify from '../superface/shopify.provider.json';
 
@@ -12,12 +12,13 @@ export default {
     // here we don't use the request parameter as this is just an example
 
     // See GetCustomer.js usecase for more comments
-    const client = new Client({
+    const client = new OneClient({
       preopens: {
-        'superface/product-management.product-update.supr': new Uint8Array(profileProductUpdate),
-        'superface/product-management.product-update.shopify.suma.js': new Uint8Array(mapProductUpdateShopify),
+        'superface/product-management.product-update.profile': new Uint8Array(profileProductUpdate),
+        'superface/product-management.product-update.shopify.map.js': new Uint8Array(mapProductUpdateShopify),
         'superface/shopify.provider.json': new Uint8Array(providerShopify)
-      }
+      },
+      token: undefined
     });
     const profile = await client.getProfile('product-management/product-update');
     const usecase = profile.getUseCase('UpdateProduct');
@@ -72,15 +73,19 @@ export default {
       }
     );
 
+    let response;
     try {
       const ok = await result;
-      return new Response(`Result: ${JSON.stringify(ok, null, 2)}`);
+      response = new Response(`Result: ${JSON.stringify(ok, null, 2)}`);
     } catch (error) {
       if (error instanceof PerformError) {
-        return new Response(`Error: ${JSON.stringify(error.errorResult, null, 2)}`, { status: 400 });
+        response = new Response(`Error: ${JSON.stringify(error.errorResult, null, 2)}`, { status: 400 });
       } else {
-        return new Response(`${error.name}\n${error.message}`, { status: 500 });
+        response = new Response(`${error.name}\n${error.message}`, { status: 500 });
       }
     }
+
+    ctx.waitUntil(client.sendMetricsToSuperface());
+    return response;
   }
 }

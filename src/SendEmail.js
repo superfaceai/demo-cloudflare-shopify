@@ -1,11 +1,11 @@
-import { Client, PerformError } from '@superfaceai/one-sdk/cloudflare';
+import { OneClient, PerformError } from '@superfaceai/one-sdk/cloudflare';
 
 // @ts-ignore
-import comlinkProfile from '../superface/communication.send-email.supr';
+import comlinkProfile from '../superface/communication.send-email.profile';
 // @ts-ignore
-import comlinkMapResend from '../superface/communication.send-email.resend.suma.js';
+import comlinkMapResend from '../superface/communication.send-email.resend.map.js';
 // @ts-ignore
-import comlinkMapMailgun from '../superface/communication.send-email.mailgun.suma.js';
+import comlinkMapMailgun from '../superface/communication.send-email.mailgun.map.js';
 // @ts-ignore
 import comlinkProviderResend from '../superface/resend.provider.json';
 // @ts-ignore
@@ -16,14 +16,15 @@ import comlinkProviderMailgun from '../superface/mailgun.provider.json';
 export default {
   async fetch(request, env, ctx) {
     // See GetCustomer.js usecase for more comments
-    const client = new Client({
+    const client = new OneClient({
       preopens: {
-        'superface/communication.send-email.supr': new Uint8Array(comlinkProfile),
-        'superface/communication.send-email.resend.suma.js': new Uint8Array(comlinkMapResend),
-        'superface/communication.send-email.mailgun.suma.js': new Uint8Array(comlinkMapMailgun),
+        'superface/communication.send-email.profile': new Uint8Array(comlinkProfile),
+        'superface/communication.send-email.resend.map.js': new Uint8Array(comlinkMapResend),
+        'superface/communication.send-email.mailgun.map.js': new Uint8Array(comlinkMapMailgun),
         'superface/resend.provider.json': new Uint8Array(comlinkProviderResend),
         'superface/mailgun.provider.json': new Uint8Array(comlinkProviderMailgun)
-      }
+      },
+      token: undefined
     });
 
     // Resend
@@ -59,19 +60,23 @@ export default {
       .getUseCase('SendEmail')
       .perform(inputs, provider);
 
+    let response;
     try {
       const ok = await result;
-      return new Response(`Result: ${JSON.stringify(ok, null, 2)}`);
+      response = new Response(`Result: ${JSON.stringify(ok, null, 2)}`);
     } catch (error) {
       if (error instanceof PerformError) {
         let response = 'Error:';
         for (const [key, value] of Object.entries(error.errorResult)) {
           response += `\n${key}: ${value}`;
         }
-        return new Response(response, { status: 400 });
+        response = new Response(response, { status: 400 });
       } else {
-        return new Response(`${error.name}\n${error.message}`, { status: 500 });
+        response = new Response(`${error.name}\n${error.message}`, { status: 500 });
       }
     }
+
+    ctx.waitUntil(client.sendMetricsToSuperface());
+    return response;
   }
 }

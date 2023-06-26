@@ -5,5 +5,5 @@ compatibility_date = "2023-04-18"
 workers_dev = true
 
 rules = [
-  { type = "Data", globs = ["**/*.suma.js", "**/*.supr", "**/*.provider.json"], fallthrough = true }
+  { type = "Data", globs = ["**/*.map.js", "**/*.profile", "**/*.provider.json"], fallthrough = true }
 ]

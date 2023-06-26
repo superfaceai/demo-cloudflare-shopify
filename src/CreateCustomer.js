@@ -1,9 +1,9 @@
-import { Client, PerformError } from '@superfaceai/one-sdk/cloudflare';
+import { OneClient, PerformError } from '@superfaceai/one-sdk/cloudflare';
 
 // @ts-ignore
-import profileCreateCustomer from '../superface/customer-management.create-customer.supr';
+import profileCreateCustomer from '../superface/customer-management.create-customer.profile';
 // @ts-ignore
-import mapCreateCustomerShopify from '../superface/customer-management.create-customer.shopify.suma.js';
+import mapCreateCustomerShopify from '../superface/customer-management.create-customer.shopify.map.js';
 // @ts-ignore
 import providerShopify from '../superface/shopify.provider.json';
 
@@ -26,12 +26,13 @@ demoRandomString('abcdefghijklmnopqrstuvwxyz', 3, 10)
 export default {
   async fetch(request, env, ctx) {
     // See GetCustomer.js usecase for more comments
-    const client = new Client({
+    const client = new OneClient({
       preopens: {
-        'superface/customer-management.create-customer.supr': new Uint8Array(profileCreateCustomer),
-        'superface/customer-management.create-customer.shopify.suma.js': new Uint8Array(mapCreateCustomerShopify),
+        'superface/customer-management.create-customer.profile': new Uint8Array(profileCreateCustomer),
+        'superface/customer-management.create-customer.shopify.map.js': new Uint8Array(mapCreateCustomerShopify),
         'superface/shopify.provider.json': new Uint8Array(providerShopify)
-      }
+      },
+      token: undefined
     });
 
     const firstName = demoRandomString('abcdefghijklmnopqrstuvwxyz', 3, 10);
@@ -76,19 +77,23 @@ export default {
       }
     );
 
+    let response;
     try {
       const ok = await result;
-      return new Response(`Result: ${JSON.stringify(ok, null, 2)}`);
+      response = new Response(`Result: ${JSON.stringify(ok, null, 2)}`);
     } catch (error) {
       if (error instanceof PerformError) {
         let response = 'Error:';
         for (const [key, value] of Object.entries(error.errorResult)) {
           response += `\n${key}: ${value}`;
         }
-        return new Response(response, { status: 400 });
+        response = new Response(response, { status: 400 });
       } else {
-        return new Response(`${error.name}\n${error.message}`, { status: 500 });
+        response = new Response(`${error.name}\n${error.message}`, { status: 500 });
       }
     }
+
+    ctx.waitUntil(client.sendMetricsToSuperface());
+    return response;
   }
 }

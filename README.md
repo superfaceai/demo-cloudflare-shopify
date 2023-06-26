@@ -20,17 +20,17 @@ At the top of each worker we import OneSDK as well as the assets (profile, map, 
 import { Client, PerformError, UnexpectedError } from '@superfaceai/one-sdk/cloudflare';
 
 // @ts-ignore
-import profile from 'path/to/profile.supr';
+import profile from 'path/to/profile.profile';
 // @ts-ignore
-import map from 'path/to/map.suma.js';
+import map from 'path/to/map.map.js';
 // @ts-ignore
 import provider from 'path/to/provider.provider.json';
 
 const client = new Client({
   env: { /* ... */ },
   preopens: {
-    'superface/prefix.name.supr': new Uint8Array(profile),
-    'superface/prefix.name.provider.suma.js': new Uint8Array(map),
+    'superface/prefix.name.profile': new Uint8Array(profile),
+    'superface/prefix.name.provider.map.js': new Uint8Array(map),
     'superface/provider.provider.json': new Uint8Array(provider)
   }
 });

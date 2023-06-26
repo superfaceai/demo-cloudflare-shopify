@@ -1,24 +1,25 @@
-import { Client, PerformError } from '@superfaceai/one-sdk/cloudflare';
+import { OneClient, PerformError } from '@superfaceai/one-sdk/cloudflare';
 
 // @ts-ignore
-import profileSubscribeWebhook from '../superface/webhook-management.subscribe-webhook.supr';
+import profileSubscribeWebhook from '../superface/webhook-management.subscribe-webhook.profile';
 // @ts-ignore
-import mapSubscribeWebhookShopify from '../superface/webhook-management.subscribe-webhook.suma.js';
+import mapSubscribeWebhookShopify from '../superface/webhook-management.subscribe-webhook.map.js';
 // @ts-ignore
 import providerShopify from '../superface/shopify.provider.json';
 
 export default {
   async fetch(request, env, ctx) {
     // See GetCustomer.js usecase for more comments
-    const client = new Client({
+    const client = new OneClient({
       env: {
-        SF_LOG: 'trace'
+        ONESDK_LOG: 'trace'
       },
       preopens: {
-        'superface/webhook-management.subscribe-webhook.supr': new Uint8Array(profileSubscribeWebhook),
-        'superface/webhook-management.subscribe-webhook.shopify.suma.js': new Uint8Array(mapSubscribeWebhookShopify),
+        'superface/webhook-management.subscribe-webhook.profile': new Uint8Array(profileSubscribeWebhook),
+        'superface/webhook-management.subscribe-webhook.shopify.map.js': new Uint8Array(mapSubscribeWebhookShopify),
         'superface/shopify.provider.json': new Uint8Array(providerShopify)
-      }
+      },
+      token: undefined
     });
     const profile = await client.getProfile('webhook-management/subscribe-webhook');
     const usecase = profile.getUseCase('WebhookSubscription');
@@ -41,15 +42,19 @@ export default {
       }
     );
 
+    let response;
     try {
       const ok = await result;
-      return new Response(`Result: ${JSON.stringify(ok, null, 2)}`);
+      response = new Response(`Result: ${JSON.stringify(ok, null, 2)}`);
     } catch (error) {
       if (error instanceof PerformError) {
-        return new Response(`Error: ${JSON.stringify(error.errorResult, null, 2)}`, { status: 400 });
+        response = new Response(`Error: ${JSON.stringify(error.errorResult, null, 2)}`, { status: 400 });
       } else {
-        return new Response(`${error.name}\n${error.message}`, { status: 500 });
+        response = new Response(`${error.name}\n${error.message}`, { status: 500 });
       }
     }
+
+    ctx.waitUntil(client.sendMetricsToSuperface());
+    return response;
   }
 }
