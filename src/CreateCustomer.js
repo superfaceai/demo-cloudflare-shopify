@@ -1,4 +1,4 @@
-import { OneClient, PerformError } from '@superfaceai/one-sdk/cloudflare';
+import { OneClient, PerformError } from '@superfaceai/one-sdk-cloudflare';
 
 // @ts-ignore
 import profileCreateCustomer from '../superface/customer-management.create-customer.profile';

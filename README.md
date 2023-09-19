@@ -17,7 +17,7 @@ The workers are the `src` directory. Each file is a separate worker with the sam
 At the top of each worker we import OneSDK as well as the assets (profile, map, provider) which are currently all baked into the worker.
 
 ```ts
-import { Client, PerformError, UnexpectedError } from '@superfaceai/one-sdk/cloudflare';
+import { Client, PerformError, UnexpectedError } from '@superfaceai/one-sdk-cloudflare';
 
 // @ts-ignore
 import profile from 'path/to/profile.profile';

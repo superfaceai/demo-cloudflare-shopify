@@ -1,4 +1,4 @@
-import { OneClient, PerformError, UnexpectedError } from '@superfaceai/one-sdk/cloudflare';
+import { OneClient, PerformError, UnexpectedError } from '@superfaceai/one-sdk-cloudflare';
 
 // import profile, map and provider assets to be bundled with the worker
 // @ts-ignore
